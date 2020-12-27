@@ -1,2 +1,2 @@
-# Minecraft RPG
-A turn-based RPG inspired by Minecraft.
+# Minecraft RPG (Discord bot)
+A turn-based RPG Discord bot inspired by Minecraft.
