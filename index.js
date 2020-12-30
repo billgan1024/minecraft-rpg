@@ -1,6 +1,6 @@
 Discord = require("discord.js");
 const fs = require("fs");
-//const config = require("./config.json");
+const config = require("./config.json");
 const mongo = require("./mongo");
 prefix = config.prefix; token = config.token;
 
