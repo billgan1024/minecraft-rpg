@@ -2,7 +2,7 @@ Discord = require("discord.js");
 const fs = require("fs");
 const config = require("./config.json");
 const mongo = require("./mongo");
-prefix = config.prefix; token = config.token;
+prefix = config.prefix;
 
 serverID = "420736857597542402";
 channelID = "790267535210577941";
@@ -41,7 +41,7 @@ classStats = {
 weaponsEmojis = ["sword", "rod", "axe", "bow"];
 classesEmojis = ["druid", "warrior", "mage", "archer", "rogue"];
 miscEmojis = ["accept", "deny", "heart"];
-const welcome = require('./welcome')
+
 client.once("ready", async () => {
     console.log("Bot started.");
     const guild = await client.guilds.fetch(serverID);
