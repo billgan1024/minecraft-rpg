@@ -3,7 +3,13 @@ module.exports = {
     aliases: [],
     description: `Debug command`,
     run(message, args) {
-        message.channel.send("Sent debug messages to console.");
-        console.log(gameData);
+        for(const [val, key] in customEmojis)
+        {
+            console.log(val);
+        }
+        //customEmojis.forEach((val, key) => console.log(key));
+        /*message.channel.messages.fetch().then(results => {
+            console.log(results);
+        })*/
     }
 }

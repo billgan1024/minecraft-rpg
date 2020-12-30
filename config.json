@@ -1,7 +1,7 @@
 {
     "prefix": ".",
-    "token": "NzkyNDAxMDYxNjY3MDEyNjI4.X-dK_w.BQTBEZAY6uTRN5tV8fgakp6O-Z4",
-    "mongoPath": "mongodb://localhost:27017",
+    "token": "NzkyNDAxMDYxNjY3MDEyNjI4.X-dK_w.qHvdDCcOhafsE0Kv2_i5JKpBZOk",
+    "mongoPath": "mongodb://localhost:27017/info-index",
     "name": "Info Index",
     "version": 1.0
 }

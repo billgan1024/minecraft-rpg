@@ -15,23 +15,45 @@ red = "f93a2f";
 blue = "0099e1";
 primary = "00c09a";
 
-const client = new Discord.Client({restTimeOffset: 50});
+pending = 0;
+class_select = 1;
+
+const client = new Discord.Client({ ws: { intents: Discord.Intents.ALL }, restTimeOffset: 50 });
 client.login(token);
 
 counter = 0;
 gameData = new Discord.Collection();;
 customEmojis = new Discord.Collection();
 
+//class stats
+classStats = {
+    "druid": { health: 1500, weapons: ["sword", "rod", "axe"] },
+    "warrior": { health: 1400, weapons: ["sword", "rod", "axe"] },
+    "mage": { health: 1250, weapons: ["sword", "rod", "axe"] },
+    "archer": { health: 1200, weapons: ["sword", "axe", "bow"] },
+    "rogue": { health: 1000, weapons: ["sword", "axe", "bow"] }
+}
+
+//class skills
+
+
+//emoji groups
+weaponsEmojis = ["sword", "rod", "axe", "bow"];
+classesEmojis = ["druid", "warrior", "mage", "archer", "rogue"];
+miscEmojis = ["accept", "deny", "heart"];
+const welcome = require('./welcome')
 client.once("ready", async () => {
     console.log("Bot started.");
-    await mongo().then((mongoose) => {
+    const guild = await client.guilds.fetch(serverID);
+    /*await mongo().then((mongoose) => {
         try {
+            mongoose.set("useFindAndModify", false);
             console.log("Connected to mongo!");
         } finally {
             mongoose.connection.close();
         }
-    })
-    addEmojis(["sword", "rod", "axe", "bow", "druid", "warrior", "mage", "archer", "rogue", "accept", "deny"]);
+    })*/
+    addEmojis(guild, weaponsEmojis); addEmojis(guild, classesEmojis); addEmojis(guild, miscEmojis);
     //console.log(customEmojis);
 });
 
@@ -48,11 +70,11 @@ for(const file of commandFiles) {
 
 for(const file of eventFiles) {
     const event = require(`./events/${file}`);
-    event(client);
+    event(client); console.log(file);
 }
 
 client.on("message", message => {
-    const args = message.content.replace(/\s+/g, " ").trim().split(" ");
+    const args = message.content.toLowerCase().replace(/\s+/g, " ").trim().split(" ");
     if(!args[0].startsWith(prefix) || message.author.bot) return;
     const cmd = args.shift().slice(prefix.length);
     console.log(`${message.author.username} ran command "${cmd}" with arguments "${args}".`);
@@ -67,7 +89,6 @@ client.on("message", message => {
     }
 });
 
-async function addEmojis(emojiNames) {
-    const guild = await client.guilds.fetch(serverID);
+function addEmojis(guild, emojiNames) {
     emojiNames.forEach(name => customEmojis.set(name, guild.emojis.cache.find(emoji => emoji.name === name)));
 }
