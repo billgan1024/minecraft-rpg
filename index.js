@@ -1,6 +1,6 @@
 Discord = require("discord.js");
 const fs = require("fs");
-const config = require("./config.json");
+//const config = require("./config.json");
 const mongo = require("./mongo");
 prefix = config.prefix; token = config.token;
 
@@ -19,7 +19,7 @@ pending = 0;
 class_select = 1;
 
 const client = new Discord.Client({ ws: { intents: Discord.Intents.ALL }, restTimeOffset: 50 });
-client.login(token);
+client.login(process.env.DJS_TOKEN);
 
 counter = 0;
 gameData = new Discord.Collection();;
