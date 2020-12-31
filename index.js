@@ -2,8 +2,6 @@ Discord = require("discord.js");
 const fs = require("fs");
 require("dotenv/config");
 
-const owner = process.env.OWNER;
-const token = process.env.TOKEN;
 const firebase = require("firebase/app");
 const FieldValue = require("firebase-admin").firestore.FieldValue;
 const admin = require("firebase-admin");
@@ -28,7 +26,7 @@ pending = 0;
 class_select = 1;
 
 const client = new Discord.Client({ ws: { intents: Discord.Intents.ALL }, restTimeOffset: 50 });
-client.login(process.env.DJS_TOKEN);
+client.login(process.env.token);
 //client.login(token);
 
 counter = 0;
