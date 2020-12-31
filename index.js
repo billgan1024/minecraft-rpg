@@ -16,6 +16,7 @@ let db = admin.firestore();
 //note: prefix cannot be global anymore. It is instead fetched from the database because the prefix is now
 //guild-dependent.
 // prefix = config.prefix;
+serverID = "420736857597542402";
 
 green = "00d166";
 red = "f93a2f";
