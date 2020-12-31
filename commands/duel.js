@@ -2,9 +2,8 @@ const embeds = require("../embeds");
 module.exports = {
     name: "duel",
     aliases: [],
-    description: `${prefix}duel @[player] - Challenges a player to a duel.`,
-    run(message, args) {
-        if(message.channel.type !== "text") return;
+    description: "Challenges a player to a duel.",
+    run(message, args, db) {
         const { member, mentions } = message, tag1 = `<@${member.id}>`;
         const target = mentions.users.first();
         if (target) {

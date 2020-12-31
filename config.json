@@ -1,6 +1,0 @@
-{
-    "prefix": ".",
-    "mongoPath": "mongodb://localhost:27017/info-index",
-    "name": "Info Index",
-    "version": 1.0
-}

@@ -1,8 +1,9 @@
 const embeds = require("../embeds");
 module.exports = (client) => {
     client.on("messageReactionAdd", (reaction, user) => {
-        if(user.bot) return;
-        const { message } = reaction, game = gameData.get(message.id);
+        const { message } = reaction;
+        if(user.bot || message.channel.type !== "text") return;
+        const game = gameData.get(message.id);
         if(game && game.state === class_select)
         {
             const idx = game.players.indexOf(user.id);

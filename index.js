@@ -1,14 +1,23 @@
 Discord = require("discord.js");
 const fs = require("fs");
-const config = require("./config.json");
-const mongo = require("./mongo");
-prefix = config.prefix;
+require("dotenv/config");
 
-serverID = "420736857597542402";
-channelID = "790267535210577941";
-userID = "195263520344899584";
-botID = "792401061667012628";
-debug = false;
+const owner = process.env.OWNER;
+const token = process.env.TOKEN;
+const firebase = require("firebase/app");
+const FieldValue = require("firebase-admin").firestore.FieldValue;
+const admin = require("firebase-admin");
+const serviceAccount = require("./service-account.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+
+let db = admin.firestore();
+
+//note: prefix cannot be global anymore. It is instead fetched from the database because the prefix is now
+//guild-dependent.
+// prefix = config.prefix;
 
 green = "00d166";
 red = "f93a2f";
@@ -20,6 +29,7 @@ class_select = 1;
 
 const client = new Discord.Client({ ws: { intents: Discord.Intents.ALL }, restTimeOffset: 50 });
 client.login(process.env.DJS_TOKEN);
+//client.login(token);
 
 counter = 0;
 gameData = new Discord.Collection();;
@@ -36,7 +46,6 @@ classStats = {
 
 //class skills
 
-
 //emoji groups
 weaponsEmojis = ["sword", "rod", "axe", "bow"];
 classesEmojis = ["druid", "warrior", "mage", "archer", "rogue"];
@@ -45,20 +54,24 @@ miscEmojis = ["accept", "deny", "heart"];
 client.once("ready", async () => {
     console.log("Bot started.");
     const guild = await client.guilds.fetch(serverID);
-    /*await mongo().then((mongoose) => {
-        try {
-            mongoose.set("useFindAndModify", false);
-            console.log("Connected to mongo!");
-        } finally {
-            mongoose.connection.close();
-        }
-    })*/
     addEmojis(guild, weaponsEmojis); addEmojis(guild, classesEmojis); addEmojis(guild, miscEmojis);
     //console.log(customEmojis);
 });
 
+client.on("guildCreate", async guild => {
+    db.collection("guilds").doc(guild.id).set({
+        "id": guild.id,
+        "name": guild.name,
+        "owner": guild.owner.user.username,
+        "ownerID": guild.owner.id,
+        "memberCount": guild.memberCount,
+        "prefix": "."
+    });
+    console.log("a new guild has appeared");
+});
+
 commands = new Discord.Collection();
-events = new Discord.Collection();
+dbCommands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync("./commands");
 const eventFiles = fs.readdirSync("./events");
@@ -67,13 +80,34 @@ for(const file of commandFiles) {
     const command = require(`./commands/${file}`);
     commands.set(command.name, command);
 }
-
 for(const file of eventFiles) {
     const event = require(`./events/${file}`);
     event(client); console.log(file);
 }
 
-client.on("message", message => {
+client.on("message", async message => {
+    if(message.channel.type !== "text") return;
+    let prefix = "";
+    await db.collection("guilds").doc(message.guild.id).get().then(results => {
+        if (results.exists)
+        {
+            prefix = results.data().prefix;
+        }
+        else
+        {
+            const { guild } = message;
+            db.collection("guilds").doc(guild.id).set({
+                "id": guild.id,
+                "name": guild.name,
+                "owner": guild.owner.user.username,
+                "ownerID": guild.owner.id,
+                "memberCount": guild.memberCount,
+                "prefix": "."
+            });
+            prefix = ".";
+            console.log("A new guild has been stored in the database.");
+        }
+    });
     const args = message.content.toLowerCase().replace(/\s+/g, " ").trim().split(" ");
     if(!args[0].startsWith(prefix) || message.author.bot) return;
     const cmd = args.shift().slice(prefix.length);
@@ -83,7 +117,7 @@ client.on("message", message => {
         const command = c[1];
         if(cmd === command.name || command.aliases.includes(cmd))
         {
-            command.run(message, args);
+            command.run(message, args, db);
             break;
         }
     }

@@ -2,7 +2,7 @@ module.exports = {
     name: "debug",
     aliases: [],
     description: `Debug command`,
-    run(message, args) {
+    run(message, args, db) {
         for(const [val, key] in customEmojis)
         {
             console.log(val);
