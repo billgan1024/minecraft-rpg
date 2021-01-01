@@ -2,7 +2,7 @@ module.exports = {
     duelPending(tag1, tag2)
     {
         const embed = new Discord.MessageEmbed()
-            .setColor(primary)
+            .setColor(colours["primary"])
             .setTitle("Duel")
             .setDescription(`${tag1} has requested to duel ${tag2}!
             \n${tag2} has 10 seconds to accept or decline by reacting to this message.`);
@@ -18,7 +18,7 @@ module.exports = {
     duelAccept(tag1, tag2)
     {
         const embed = new Discord.MessageEmbed()
-            .setColor(green)
+            .setColor(colours["green"])
             .setTitle("Duel")
             .setDescription(`${tag2} accepted ${tag1}'s duel.`);
         return embed;
@@ -26,31 +26,29 @@ module.exports = {
     duelDeny(tag1, tag2)
     {
         const embed = new Discord.MessageEmbed()
-            .setColor(red)
+            .setColor(colours["red"])
             .setTitle("Duel")
             .setDescription(`${tag2} denied ${tag1}'s duel.`);
         return embed;
     },
     classSelect(tag1, tag2, name1, name2, game)
     {
-        const className1 = game.classes[0][0].toUpperCase() + game.classes[0].substring(1);
-        const className2 = game.classes[1][0].toUpperCase() + game.classes[1].substring(1);
+        const className1 = cap(game.classes[0]), className2 = cap(game.classes[1]);
         const stat1 = classStats[game.classes[0]], stat2 = classStats[game.classes[1]];
         const classEmoji1 = customEmojis.get(game.classes[0]), classEmoji2 = customEmojis.get(game.classes[1]);
-        const heart = customEmojis.get("heart");
-        console.log(stat1);
+        const health = customEmojis.get("health");
         const weaponsEmoji1 = stat1 ? stat1.weapons.map(weapon =>
             customEmojis.get(weapon).toString()).join(" ") : "";
         const weaponsEmoji2 = stat2 ? stat2.weapons.map(weapon =>
             customEmojis.get(weapon).toString()).join(" ") : "";
 
         const embed = new Discord.MessageEmbed()
-            .setColor(primary)
+            .setColor(colours["primary"])
             .setTitle("Class Selection")
-            .setDescription(`${tag1}, ${tag2}, react below to choose your class.\nWhen you are done, type "${prefix}ready".`);
-            if(classEmoji1) embed.addField(`${name1}`, `${classEmoji1} ${className1}\n${heart} ${game.health[0]}\n${weaponsEmoji1}`, true);
+            .setDescription(`${tag1}, ${tag2}, react below to choose your class.\nWhen you are done, use the "ready" command.`);
+            if(classEmoji1) embed.addField(`${name1}`, `${classEmoji1} ${className1}\n${health} ${game.health[0]}\n${weaponsEmoji1}`, true);
             else embed.addField(`${name1}`, "No class selected", true);
-            if(classEmoji2) embed.addField(`${name2}`, `${classEmoji2} ${className2}\n${heart} ${game.health[1]}\n${weaponsEmoji2}`, true);
+            if(classEmoji2) embed.addField(`${name2}`, `${classEmoji2} ${className2}\n${health} ${game.health[1]}\n${weaponsEmoji2}`, true);
             else embed.addField(`${name2}`, "No class selected", true);
         return embed;
     },
@@ -64,13 +62,40 @@ module.exports = {
     },
     help()
     {
-        const embed = new Discord.MessageEmbed().setColor(blue).setTitle("Commands List");
+        const embed = new Discord.MessageEmbed().setColor(colours["blue"]).setTitle("Commands List");
         for(const c of commands)
         {
             const command = c[1];
             embed.addField(command.name, command.description, false);
         }
         return embed;
+    },
+    skillSelect(tag1, tag2)
+    {
+        const embed = new Discord.MessageEmbed().setColor(colours["primary"]).setTitle("Skill Selection")
+            .setDescription(`${tag1}, ${tag2}, check your DMs to select your skills.\nWhen you are done, return to this channel.`);
+        return embed;
+    },
+    skills(className)
+    {
+        const embed = new Discord.MessageEmbed()
+            .setTitle("Skill Selection")
+            .setColor(colours[className])
+            .setDescription(cap(className))
+            .setFooter(`Select your skills for each weapon by reacting to this message.`);
+        for(const weapon in classSkills[className])
+        {
+            const emoji = customEmojis.get(weapon);
+            embed.addField(`${emoji} ${cap(weapon)}`, `**Base damage:** ${weaponStats[weapon].damage}\n**Type:** ${cap(weaponStats[weapon].type)}`, false);
+            for(const skill of classSkills[className][weapon])
+            {
+                embed.addField(skill.name, skill.desc, true);
+            }
+        }
+        const emoji = customEmojis.get("ultimate");
+        embed.addField(`${emoji} Ultimate`, `**${ultimates[className].name}**\n${ultimates[className].desc}`);
+        return embed;
     }
 }
 
+function cap(s) { return s[0].toUpperCase() + s.substring(1); }

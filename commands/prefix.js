@@ -1,7 +1,7 @@
 module.exports = {
-    name: "setprefix",
+    name: "prefix",
     aliases: [],
-    description: "Sets the prefix used by the bot.",
+    description: "Sets the prefix used by the bot. (Admin required)",
     async run(message, args, db)
     {
         const { member } = message, tag1 = `<@${member.id}>`;

@@ -3,10 +3,9 @@ module.exports = {
     aliases: [],
     description: `Debug command`,
     run(message, args, db) {
-        for(const [val, key] in customEmojis)
-        {
-            console.log(val);
-        }
+        const {member} = message;
+        console.log(member.user.id, member.id);
+        //for(const key of customEmojis.keyArray()) console.log(key);
         //customEmojis.forEach((val, key) => console.log(key));
         /*message.channel.messages.fetch().then(results => {
             console.log(results);

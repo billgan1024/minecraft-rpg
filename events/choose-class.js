@@ -6,13 +6,13 @@ module.exports = (client) => {
         const game = gameData.get(message.id);
         if(game && game.state === class_select)
         {
-            const idx = game.players.indexOf(user.id);
-            if(idx !== -1 && classesEmojis.includes(reaction.emoji.name))
+            const idx = game.players.indexOf(user);
+            if(idx !== -1 && classesEmojis.includes(reaction.emoji.name) && !game.ready[idx])
             {
-                const tag1 = `<@${game.players[0]}>`, tag2 = `<@${game.players[1]}>`;
+                const tag1 = `<@${game.players[0].id}>`, tag2 = `<@${game.players[1].id}>`;
                 game.classes[idx] = reaction.emoji.name;
                 game.health[idx] = classStats[reaction.emoji.name].health;
-                message.edit(embeds.classSelect(tag1, tag2, game.names[0], game.names[1], game));
+                message.edit(embeds.classSelect(tag1, tag2, game.players[0].username, game.players[1].username, game));
             }
         }
     });
