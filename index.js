@@ -8,7 +8,7 @@ admin.initializeApp({
     "type": "service_account",
     "project_id": "minecraft-rpg-23867",
     "private_key_id": process.env.private_key_id,
-    "private_key": process.env.private_key,
+    "private_key": process.env.private_key.replace(/\\n/g, '\n'),
     "client_email": "firebase-adminsdk-r0h4c@minecraft-rpg-23867.iam.gserviceaccount.com",
     "client_id": "112605383321392124569",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
