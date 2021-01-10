@@ -1,11 +1,11 @@
 module.exports = {
-    duelPending(tag1, tag2)
+    duelPending(tag1, tag2, duration)
     {
         const embed = new Discord.MessageEmbed()
             .setColor(colours["primary"])
             .setTitle("Duel")
             .setDescription(`${tag1} has requested to duel ${tag2}!
-            \n${tag2} has 10 seconds to accept or decline by reacting to this message.`);
+            \n${tag2} has ${duration} seconds to accept or decline by reacting to this message.`);
         return embed;
     },
     duelExpired(tag1, tag2)
@@ -20,7 +20,7 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
             .setColor(colours["green"])
             .setTitle("Duel")
-            .setDescription(`${tag2} accepted ${tag1}'s duel.`);
+            .setDescription(`${tag1} accepted ${tag2}'s duel.`);
         return embed;
     },
     duelDeny(tag1, tag2)
@@ -28,7 +28,7 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
             .setColor(colours["red"])
             .setTitle("Duel")
-            .setDescription(`${tag2} denied ${tag1}'s duel.`);
+            .setDescription(`${tag1} denied ${tag2}'s duel.`);
         return embed;
     },
     classSelect(tag1, tag2, name1, name2, game)

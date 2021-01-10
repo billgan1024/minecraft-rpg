@@ -2,10 +2,20 @@ Discord = require("discord.js");
 const fs = require("fs");
 
 const admin = require("firebase-admin");
-const serviceAccount = require("./service-account.json");
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert({
+    "type": "service_account",
+    "project_id": "minecraft-rpg-23867",
+    "private_key_id": process.env.private_key_id,
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC3ep5KfzdEFWTw\ncGE/8/aO7uMcuIEH5Q+C+H4C6nqdlDP3L0dbDtFaZ0GwS2Ys9mpqko4170DjJ1IK\nqSlDNsiWBWt+U38Csh+AOHxUD+I/2yL4+/pSErwoD0mPCSr6/BiKGIGQIylA9PPB\nQNR08pXe4NiXXKU6wqUB8B9/dG878a8ZweLxTHNZ3BSnClDr3rGSiCyVJe4bAW8U\nTWPAw7PIiiYcPPKCRPQTgRygF6OyEONC4upsjlfesyx3t+DXBQrRHqsGWgcD26OG\nbmMp2qnPfQ4iqotmFXF7vh+8Aiz5nMLIbsIMilPrrnm1b0lelr6RrOAeCnD0qwEK\nGMWdTA+5AgMBAAECggEAJ6mLBEGh2cbiLhOtAh0jxFwhnjjIM8Oxabd7zfeQD/ZU\nkW+X9jgqy2cczRZPfRK7iFQsB76zgScj1gghUlVKYRvE0+cKwrNsmdQcFDPmzbT6\nR2Z5Azrnj6VWWmQ59U1/pIKNp3HiXhdVhgYUpz81ZJuoVngBg8VF1DhrJqstzIAg\neDKlkyAm4f3RgFPRydfClqmBcZqTr2Y+icgrmPjbNvl7FrS/PPjbA59A0CHsqh/Z\noXx/lc3/yLVH66JGQ04mju6b69Oco9bchW7ZLn+pwZPVHYsJUnTWrW9rkiLgFWPY\n9Lx5g6RDWsiOFCXk9LZ64mgxJBztSmnhE8FtIHGhMQKBgQD8SoREcmvAoWw4nKuj\nKUZItaEM2MRpM1Ef4SAIs2T/bNPPSWWyF8T1FDQ7dE/SlV6XXfmYhullZM+3rGyy\nADkTyPKuA8cYU+r3HYgEASZjn2Ex4HXqB/YeseKpgD7z4UV7wYMq8oyOdOslX/ZJ\nZ5y3keKydg8dvxSRKfZMuTsQ/QKBgQC6LSGUDh/2LH0rGEcveU+Y3iFA9wSrYHiQ\nZYaiLH8jGGNp/h8woLVyp989cshvVWQu/nE0zHGnRf1kxHWq89iZNcvEcUxcJe3i\nWAijw+AgN9msyBENePjCXeeDuMgwN8Qk2IbBE4/1gvrlzdan1/p8gvEOMMWKetRW\nJnRi639kbQKBgE7mvxbo8en8kevik4sjjWeP5h4ubL653dUqguo1sJBxaIybV8Kq\nzF4ZQ3yUk6I4NK0CJt0c1EFxlcTLl/LTPwaBAeSKKenh1MoT4kXeVjMx1SPUHwxi\nEQboewqnoQiEm0Zo7qyvzmV/C0tVB6FNViXS6iMF6RRUfgooJW85Ps/BAoGAIcec\nhxOFAxKRZ2dRSzDUm2T6XaI0K7AmT/TL19MBAmojZ5DfMeCG65W/8JNKAMFamxg5\njB3oJTSSxFzNCMaTr0DOhwcTlsie/+l/L8+Tc+UOTsZCKdKgOAv3vLOjRvRnV1Qe\nJxwYi7BHO7j8UJnkbgEIIc4BmZ2tty/lACnAhIUCgYBwolQGXS7DA8pGQ+LSwIL0\nFOQeq4U4JlOwzQYJ6AxNosbEtwYKXknvGn65R3o+dtO9TMQeRGKmMFkoRon2+Cgq\nJq0wHhPatMHokozKYM3NMkkqZvg8VQxeIRKd8svagLQCqh8/cKmCHuqFYavmIZZq\nRMHJeqNV76w/5t7BJJk/ag==\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-r0h4c@minecraft-rpg-23867.iam.gserviceaccount.com",
+    "client_id": "112605383321392124569",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-r0h4c%40minecraft-rpg-23867.iam.gserviceaccount.com"
+})
 });
 
 let db = admin.firestore();
@@ -29,21 +39,22 @@ colours = {
 
 pending = 0;
 class_select = 1;
+skill_select = 2;
 
 const client = new Discord.Client({ ws: { intents: Discord.Intents.ALL }, restTimeOffset: 50 });
 client.login(process.env.token);
 
 counter = 0;
-/*gameData holds key-value pairs (message, data)
-message stores the reference to the message object, data = object representing game data
-data = {
-    players: [user, user] (user objects),
-    health: [int, int],
-    ready: [bool, bool],
-    classes: [string, string],
-    state: int,
-    message: message (message object)
+
+/*gameData holds key-value pairs (playerID, map(messageID, list of games))
+game = {
+    opponent: user object
+    isFirst: bool
+    ready: bool
+    class: string
+    state: string
 }*/
+
 gameData = new Discord.Collection();
 customEmojis = new Discord.Collection();
 
@@ -55,6 +66,7 @@ miscEmojis = ["accept", "deny", "health", "ultimate"];
 client.once("ready", async () => {
     console.log("Bot started.");
     const guild = await client.guilds.fetch(serverID);
+    //console.log(guild.emojis.cache);
     addEmojis(guild, weaponsEmojis); addEmojis(guild, classesEmojis); addEmojis(guild, miscEmojis);
     //console.log(customEmojis);
 });
@@ -66,7 +78,8 @@ client.on("guildCreate", async guild => {
         "owner": guild.owner.user.username,
         "ownerID": guild.owner.id,
         "memberCount": guild.memberCount,
-        "prefix": "."
+        "prefix": ".",
+        "duelReqDuration": 10
     });
     console.log("a new guild has appeared");
 });
@@ -83,13 +96,12 @@ for(const file of commandFiles) {
 }
 for(const file of eventFiles) {
     const event = require(`./events/${file}`);
-    event(client); console.log(file);
+    event(client);
 }
 
 client.on("message", async message => {
-    if(message.channel.type !== "text") return;
-    const {content} = message;
-    let prefix = "";
+    if(message.channel.type !== "text" || message.author.bot) return;
+    const { content } = message; let prefix = "";
     await db.collection("guilds").doc(message.guild.id).get().then(results => {
         if (results.exists)
         {
@@ -111,7 +123,7 @@ client.on("message", async message => {
             console.log("A new guild has been stored in the database.");
         }
     });
-    if(!content.startsWith(prefix) || message.author.bot) return;
+    if(!content.startsWith(prefix)) return;
     const args = content.toLowerCase().replace(/\s+/g, " ").trim().split(" ");
     const cmd = args.shift().slice(prefix.length);
     console.log(`${message.author.username} ran command "${cmd}" with arguments "${args}".`);
