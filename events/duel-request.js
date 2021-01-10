@@ -13,7 +13,7 @@ module.exports = (client) => {
                 if (emojiName === "accept") {
                     game.message.edit(embeds.duelAccept(tag1, tag2));
                     channel.send(embeds.classSelect(tag1, tag2, game.players[0].username, game.players[1].username, game)).then(msg => {
-                        game.state = "class-select"; process.env
+                        game.state = "class-select";
                     });
                 }
                 else if(emojiName === "deny")
